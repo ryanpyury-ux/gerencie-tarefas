@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow | Gerencie suas tarefas</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body class="bg-base-200 min-h-screen">
+    <!-- Header -->
+    <header class="navbar bg-red-600 text-white shadow-lg">
+        <div class="container mx-auto">
+            <div class="flex-1">
+                <a class="btn btn-ghost text-xl md:text-2xl font-bold">
+                    <i class="fas fa-check-circle mr-2"></i>TaskFlow
+                </a>
+            </div>
+            <div class="flex-none gap-2">
+                <div class="form-control hidden md:block">
+                    <div class="input-group">
+                        <input type="text" placeholder="Buscar tarefas..." class="input input-sm input-bordered bg-white bg-opacity-20 text-white placeholder-white placeholder-opacity-70 focus:bg-white focus:text-gray-800" />
+                        <button class="btn btn-sm bg-white bg-opacity-20 border-none">
+                            <i class="fas fa-search text-white"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="dropdown dropdown-end">
+                    <label tabindex="0" class="btn btn-ghost btn-circle avatar">
+                        <div class="w-10 rounded-full bg-white bg-opacity-20 flex items-center justify-center">
+                            <i class="fas fa-user text-white"></i>
+                        </div>
+                    </label>
+                    <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                        <li><a><i class="fas fa-user-circle mr-2"></i>Perfil</a></li>
+                        <li>
+                            <a class="flex justify-between items-center">
+                                <span><i class="fas fa-moon mr-2"></i>Tema Escuro</span>
+                                <label class="swap swap-rotate">
+                                    <input type="checkbox" id="theme-toggle" />
+                                    <div class="swap-on"><i class="fas fa-toggle-on text-primary"></i></div>
+                                    <div class="swap-off"><i class="fas fa-toggle-off"></i></div>
+                                </label>
+                            </a>
+                        </li>
+                        <li><a><i class="fas fa-cog mr-2"></i>Configurações</a></li>
+                        <li><a><i class="fas fa-sign-out-alt mr-2"></i>Sair</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="max-w-6xl mx-auto">
+            <!-- Dashboard Header -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-bold mb-2">Dashboard de Tarefas</h1>
+                    <p class="text-gray-600">Gerencie e organize suas tarefas de forma eficiente</p>
+                </div>
+                <div class="mt-4 md:mt-0">
+                    
+                    <button class="btn btn-sm btn-outline">
+                        <i class="fas fa-download mr-1"></i>Exportar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <div class="stat bg-base-100 shadow rounded-lg">
+                    <div class="stat-figure text-red-600">
+                        <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
+                            <i class="fas fa-tasks text-2xl"></i>
+                        </div>
+                    </div>
+                    <div class="stat-title text-gray-600">Total de Tarefas</div>
+                    <div class="stat-value text-red-600" id="total-tasks">0</div>
+                    <div class="stat-desc mt-1">
+                        <span class="text-success"><i class="fas fa-arrow-up mr-1"></i>3% </span>
+                        desde a última semana
+                    </div>
+                </div>
+                
+                <div class="stat bg-base-100 shadow rounded-lg">
+                    <div class="stat-figure text-success">
+                        <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+                            <i class="fas fa-check-circle text-2xl"></i>
+                        </div>
+                    </div>
+                    <div class="stat-title text-gray-600">Concluídas</div>
+                    <div class="stat-value text-success" id="completed-tasks">0</div>
+                    <div class="stat-desc mt-1">
+                        <span class="text-success"><i class="fas fa-arrow-up mr-1"></i>12% </span>
+                        desde a última semana
+                    </div>
+                </div>
+                
+                <div class="stat bg-base-100 shadow rounded-lg">
+                    <div class="stat-figure text-warning">
+                        <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center">
+                            <i class="fas fa-clock text-2xl"></i>
+                        </div>
+                    </div>
+                    <div class="stat-title text-gray-600">Pendentes</div>
+                    <div class="stat-value text-warning" id="pending-tasks">0</div>
+                    <div class="stat-desc mt-1">
+                        <span class="text-error"><i class="fas fa-arrow-down mr-1"></i>5% </span>
+                        desde a última semana
+                    </div>
+                </div>
+                
+                <div class="stat bg-base-100 shadow rounded-lg">
+                    <div class="stat-figure text-info">
+                        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+                            <i class="fas fa-spinner text-2xl"></i>
+                        </div>
+                    </div>
+                    <div class="stat-title text-gray-600">Em Progresso</div>
+                    <div class="stat-value text-info" id="progress-tasks">0</div>
+                    <div class="stat-desc mt-1">
+                        <span class="text-info"><i class="fas fa-arrow-up mr-1"></i>8% </span>
+                        desde a última semana
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Task Form -->
+            <div class="card bg-base-100 shadow-xl mb-6">
+                <div class="card-body">
+                    <h2 class="card-title text-xl md:text-2xl mb-4 flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center mr-3">
+                            <i class="fas fa-plus-circle text-red-600"></i>
+                        </div>
+                        Nova Tarefa
+                    </h2>
+                    <form id="task-form" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text font-medium">Título da tarefa</span>
+                                </label>
+                                <input type="text" id="task-title" placeholder="Ex: Revisar relatório" class="input input-bordered w-full" required>
+                            </div>
+                            
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text font-medium">Cliente</span>
+                                </label>
+                                <input type="text" id="task-client" placeholder="Ex: Empresa ABC" class="input input-bordered w-full">
+                            </div>
+                        </div>
+                        
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text font-medium">Descrição</span>
+                            </label>
+                            <textarea id="task-description" class="textarea textarea-bordered h-24" placeholder="Descreva os detalhes da tarefa"></textarea>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text font-medium">Prioridade</span>
+                                </label>
+                                <select id="task-priority" class="select select-bordered w-full">
+                                    <option disabled selected>Selecione</option>
+                                    <option value="low">Baixa</option>
+                                    <option value="medium">Média</option>
+                                    <option value="high">Alta</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text font-medium">Data de entrega</span>
+                                </label>
+                                <input type="date" id="task-date" class="input input-bordered w-full">
+                            </div>
+                            
+                            
+                        </div>
+                        
+                        <div class="form-control mt-6 flex flex-row justify-end gap-2">
+                            <button type="reset" class="btn btn-outline">
+                                <i class="fas fa-undo mr-2"></i>Limpar
+                            </button>
+                            <button type="submit" class="btn bg-red-600 text-white hover:bg-red-700">
+                                <i class="fas fa-save mr-2"></i>Salvar Tarefa
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Task List - Kanban Style -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                        <h2 class="card-title text-xl md:text-2xl mb-4 md:mb-0 flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center mr-3">
+                                <i class="fas fa-columns text-red-600"></i>
+                            </div>
+                            Minhas Tarefas
+                        </h2>
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <div class="form-control">
+                                <select id="filter-status" class="select select-bordered select-sm">
+                                    <option value="all">Todos os status</option>
+                                    <option value="pending">Pendentes</option>
+                                    <option value="progress">Em progresso</option>
+                                    <option value="completed">Concluídas</option>
+                                </select>
+                            </div>
+                            <div class="form-control">
+                                <select id="filter-priority" class="select select-bordered select-sm">
+                                    <option value="all">Todas as prioridades</option>
+                                    <option value="low">Baixa</option>
+                                    <option value="medium">Média</option>
+                                    <option value="high">Alta</option>
+                                </select>
+                            </div>
+                            <div class="form-control">
+                                <select id="filter-client" class="select select-bordered select-sm">
+                                    <option value="all">Todos os clientes</option>
+                                    <option value="empresa-abc">Empresa ABC</option>
+                                    <option value="cliente-xyz">Cliente XYZ</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <!-- Kanban Board -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Pendentes Column -->
+                        <div class="bg-base-200 rounded-lg">
+                            <div class="bg-warning bg-opacity-20 p-4 rounded-t-lg">
+                                <div class="flex items-center justify-between mb-1">
+                                    <h3 class="font-bold text-lg flex items-center">
+                                        <i class="fas fa-clock text-warning mr-2"></i>
+                                        Pendentes
+                                    </h3>
+                                    <span class="badge badge-warning" id="pending-count">0</span>
+                                </div>
+                                <p class="text-xs text-gray-600">Tarefas que ainda não foram iniciadas</p>
+                            </div>
+                            <div id="pending-tasks-container" class="p-4 space-y-3 min-h-[400px] overflow-y-auto max-h-[600px]">
+                                <!-- Pending tasks will be added here -->
+                                
+                                <!-- Example Task Card (will be generated by JS) -->
+                                <div class="card bg-base-100 shadow-sm border border-base-300 hover:shadow-md transition-all cursor-move" draggable="true">
+                                    <div class="card-body p-4">
+                                        <div class="flex justify-between items-start">
+                                            <h3 class="font-medium text-base">Preparar apresentação de vendas</h3>
+                                            <div class="badge badge-warning">Média</div>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mt-1 line-clamp-2">Preparar slides para a reunião com o cliente sobre o novo produto.</p>
+                                        <div class="flex flex-wrap gap-2 mt-3">
+                                            <span class="badge badge-outline badge-sm">
+                                                <i class="fas fa-building mr-1"></i> Empresa ABC
+                                            </span>
+                                            <span class="badge badge-outline badge-sm">
+                                                <i class="fas fa-calendar-alt mr-1"></i> 15 Nov
+                                            </span>
+                                        </div>
+                                        <div class="card-actions justify-between items-center mt-3">
+                                            <div class="avatar-group -space-x-2">
+                                                <div class="avatar avatar-xs">
+                                                    <div class="w-6 h-6 rounded-full bg-blue-200 flex items-center justify-center text-xs font-bold">JD</div>
+                                                </div>
+                                            </div>
+                                            <div class="flex gap-1">
+                                                <button class="btn btn-ghost btn-xs">
+                                                    <i class="fas fa-edit text-info"></i>
+                                                </button>
+                                                <button class="btn btn-ghost btn-xs">
+                                                    <i class="fas fa-trash-alt text-error"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Em Progresso Column -->
+                        <div class="bg-base-200 rounded-lg">
+                            <div class="bg-info bg-opacity-20 p-4 rounded-t-lg">
+                                <div class="flex items-center justify-between mb-1">
+                                    <h3 class="font-bold text-lg flex items-center">
+                                        <i class="fas fa-spinner text-info mr-2"></i>
+                                        Em Progresso
+                                    </h3>
+                                    <span class="badge badge-info" id="progress-count">0</span>
+                                </div>
+                                <p class="text-xs text-gray-600">Tarefas que estão sendo trabalhadas</p>
+                            </div>
+                            <div id="progress-tasks-container" class="p-4 space-y-3 min-h-[400px] overflow-y-auto max-h-[600px]">
+                                <!-- In progress tasks will be added here -->
+                                
+                                <!-- Example Task Card (will be generated by JS) -->
+                                <div class="card bg-base-100 shadow-sm border border-base-300 hover:shadow-md transition-all cursor-move" draggable="true">
+                                    <div class="card-body p-4">
+                                        <div class="flex justify-between items-start">
+                                            <h3 class="font-medium text-base">Desenvolver nova funcionalidade</h3>
+                                            <div class="badge badge-error">Alta</div>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mt-1 line-clamp-2">Implementar sistema de notificações para o aplicativo móvel.</p>
+                                        <div class="flex flex-wrap gap-2 mt-3">
+                                            <span class="badge badge-outline badge-sm">
+                                                <i class="fas fa-building mr-1"></i> Cliente XYZ
+                                            </span>
+                                            <span class="badge badge-outline badge-sm">
+                                                <i class="fas fa-calendar-alt mr-1"></i> 20 Nov
+                                            </span>
+                                        </div>
+                                        <div class="card-actions justify-between items-center mt-3">
+                                            <div class="avatar-group -space-x-2">
+                                                <div class="avatar avatar-xs">
+                                                    <div class="w-6 h-6 rounded-full bg-green-200 flex items-center justify-center text-xs font-bold">AS</div>
+                                                </div>
+                                            </div>
+                                            <div class="flex gap-1">
+                                                <button class="btn btn-ghost btn-xs">
+                                                    <i class="fas fa-edit text-info"></i>
+                                                </button>
+                                                <button class="btn btn-ghost btn-xs">
+                                                    <i class="fas fa-trash-alt text-error"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Concluídas Column -->
+                        <div class="bg-base-200 rounded-lg">
+                            <div class="bg-success bg-opacity-20 p-4 rounded-t-lg">
+                                <div class="flex items-center justify-between mb-1">
+                                    <h3 class="font-bold text-lg flex items-center">
+                                        <i class="fas fa-check-circle text-success mr-2"></i>
+                                        Concluídas
+                                    </h3>
+                                    <span class="badge badge-success" id="completed-count">0</span>
+                                </div>
+                                <p class="text-xs text-gray-600">Tarefas que foram finalizadas</p>
+                            </div>
+                            <div id="completed-tasks-container" class="p-4 space-y-3 min-h-[400px] overflow-y-auto max-h-[600px]">
+                                <!-- Completed tasks will be added here -->
+                                
+                                <!-- Example Task Card (will be generated by JS) -->
+                                <div class="card bg-base-100 shadow-sm border border-base-300 hover:shadow-md transition-all cursor-move opacity-70" draggable="true">
+                                    <div class="card-body p-4">
+                                        <div class="flex justify-between items-start">
+                                            <h3 class="font-medium text-base line-through">Enviar relatório mensal</h3>
+                                            <div class="badge badge-success">Baixa</div>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mt-1 line-clamp-2 line-through">Compilar dados e enviar relatório mensal para a diretoria.</p>
+                                        <div class="flex flex-wrap gap-2 mt-3">
+                                            <span class="badge badge-outline badge-sm">
+                                                <i class="fas fa-building mr-1"></i> Interno
+                                            </span>
+                                            <span class="badge badge-outline badge-sm">
+                                                <i class="fas fa-calendar-alt mr-1"></i> 5 Nov
+                                            </span>
+                                        </div>
+                                        <div class="card-actions justify-between items-center mt-3">
+                                            <div class="avatar-group -space-x-2">
+                                                <div class="avatar avatar-xs">
+                                                    <div class="w-6 h-6 rounded-full bg-purple-200 flex items-center justify-center text-xs font-bold">ME</div>
+                                                </div>
+                                            </div>
+                                            <div class="flex gap-1">
+                                                <button class="btn btn-ghost btn-xs">
+                                                    <i class="fas fa-edit text-info"></i>
+                                                </button>
+                                                <button class="btn btn-ghost btn-xs">
+                                                    <i class="fas fa-trash-alt text-error"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Empty State (Hidden by default in Kanban) -->
+                    <div class="hidden flex-col items-center justify-center py-8 text-center text-gray-500" id="empty-state">
+                        <div class="w-24 h-24 rounded-full bg-base-200 flex items-center justify-center mb-4">
+                            <i class="fas fa-clipboard-list text-5xl text-gray-400"></i>
+                        </div>
+                        <h3 class="text-xl font-medium mb-2">Nenhuma tarefa encontrada</h3>
+                        <p class="max-w-md mx-auto">Você ainda não tem tarefas cadastradas. Adicione uma nova tarefa para começar a organizar seu trabalho!</p>
+                        
+                    </div>
+
+                    <!-- Clear All Button -->
+                    <div class="mt-6 flex justify-end">
+                        <button id="clear-all" class="btn btn-error btn-sm">
+                            <i class="fas fa-trash-alt mr-2"></i>Limpar Tudo
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Task Edit Modal -->
+    <dialog id="edit-modal" class="modal">
+        <div class="modal-box max-w-2xl">
+            <h3 class="font-bold text-lg mb-4 flex items-center">
+                <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center mr-2">
+                    <i class="fas fa-edit text-red-600"></i>
+                </div>
+                Editar Tarefa
+            </h3>
+            <form id="edit-form" class="space-y-4">
+                <input type="hidden" id="edit-id">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-medium">Título</span>
+                        </label>
+                        <input type="text" id="edit-title" class="input input-bordered w-full" required>
+                    </div>
+                    
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-medium">Cliente</span>
+                        </label>
+                        <input type="text" id="edit-client" class="input input-bordered w-full">
+                    </div>
+                </div>
+                
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text font-medium">Descrição</span>
+                    </label>
+                    <textarea id="edit-description" class="textarea textarea-bordered h-24"></textarea>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-medium">Prioridade</span>
+                        </label>
+                        <select id="edit-priority" class="select select-bordered w-full">
+                            <option value="low">Baixa</option>
+                            <option value="medium">Média</option>
+                            <option value="high">Alta</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-medium">Data</span>
+                        </label>
+                        <input type="date" id="edit-date" class="input input-bordered w-full">
+                    </div>
+                    
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-medium">Status</span>
+                        </label>
+                        <select id="edit-status" class="select select-bordered w-full">
+                            <option value="pending">Pendente</option>
+                            <option value="progress">Em Progresso</option>
+                            <option value="completed">Concluída</option>
+                        </select>
+                    </div>
+                </div>
+                
+                
+                
+                <div class="modal-action">
+                    <button type="button" class="btn btn-outline" onclick="document.getElementById('edit-modal').close()">Cancelar</button>
+                    <button type="submit" class="btn bg-red-600 text-white hover:bg-red-700">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+            <button>fechar</button>
+        </form>
+    </dialog>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast toast-end hidden z-50">
+        <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <span id="toast-message">Operação realizada com sucesso!</span>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer footer-center p-6 bg-base-300 text-base-content mt-10">
+        <div>
+            <div class="grid grid-flow-col gap-4">
+                <a class="link link-hover"><i class="fab fa-twitter text-xl"></i></a>
+                <a class="link link-hover"><i class="fab fa-facebook text-xl"></i></a>
+                <a class="link link-hover"><i class="fab fa-instagram text-xl"></i></a>
+                <a class="link link-hover"><i class="fab fa-github text-xl"></i></a>
+            </div>
+            <div class="divider my-2"></div>
+            <p>Copyright © 2023 - TaskFlow | Todos os direitos reservados</p>
+        </div>
+    </footer>
+
+    <script>
+        // Theme Toggle
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggle = document.getElementById('theme-toggle');
+            
+            // Check if user has a saved theme preference
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            themeToggle.checked = currentTheme === 'dark';
+            
+            themeToggle.addEventListener('change', () => {
+                const theme = themeToggle.checked ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', theme);
+                localStorage.setItem('theme', theme);
+            });
+        });
+
+        // Task Management
+        document.addEventListener('DOMContentLoaded', () => {
+            // DOM Elements
+            const taskForm = document.getElementById('task-form');
+            const pendingTasksContainer = document.getElementById('pending-tasks-container');
+            const progressTasksContainer = document.getElementById('progress-tasks-container');
+            const completedTasksContainer = document.getElementById('completed-tasks-container');
+            const emptyState = document.getElementById('empty-state');
+            const clearAllBtn = document.getElementById('clear-all');
+            const filterPriority = document.getElementById('filter-priority');
+            const filterStatus = document.getElementById('filter-status');
+            const filterClient = document.getElementById('filter-client');
+            const editModal = document.getElementById('edit-modal');
+            const editForm = document.getElementById('edit-form');
+            
+            // Stats Elements
+            const totalTasksEl = document.getElementById('total-tasks');
+            const completedTasksEl = document.getElementById('completed-tasks');
+            const pendingTasksEl = document.getElementById('pending-tasks');
+            const progressTasksEl = document.getElementById('progress-tasks');
+
+            // Get tasks from localStorage
+            let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+            // Show toast notification
+            function showToast(message, type = 'success') {
+                const toast = document.getElementById('toast');
+                const toastMessage = document.getElementById('toast-message');
+                const alertDiv = toast.querySelector('.alert');
+                
+                // Set message and type
+                toastMessage.textContent = message;
+                alertDiv.className = `alert alert-${type}`;
+                
+                // Show toast
+                toast.classList.remove('hidden');
+                
+                // Hide after 3 seconds
+                setTimeout(() => {
+                    toast.classList.add('hidden');
+                }, 3000);
+            }
+
+            // Update stats
+            function updateStats() {
+                const completedTasks = tasks.filter(task => task.completed).length;
+                const progressTasks = tasks.filter(task => !task.completed && task.status === 'progress').length;
+                const pendingTasks = tasks.length - completedTasks - progressTasks;
+                
+                totalTasksEl.textContent = tasks.length;
+                completedTasksEl.textContent = completedTasks;
+                pendingTasksEl.textContent = pendingTasks;
+                progressTasksEl.textContent = progressTasks;
+            }
+
+            // Save tasks to localStorage
+            function saveTasks() {
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+                updateStats();
+            }
+
+            // Format date for display
+            function formatDate(dateString) {
+                if (!dateString) return 'Sem data';
+                const options = { day: 'numeric', month: 'short' };
+                return new Date(dateString).toLocaleDateString('pt-BR', options);
+            }
+
+            // Get priority badge class
+            function getPriorityBadge(priority) {
+                switch (priority) {
+                    case 'low':
+                        return 'badge-success';
+                    case 'medium':
+                        return 'badge-warning';
+                    case 'high':
+                        return 'badge-error';
+                    default:
+                        return 'badge-ghost';
+                }
+            }
+
+            // Get priority label
+            function getPriorityLabel(priority) {
+                switch (priority) {
+                    case 'low':
+                        return 'Baixa';
+                    case 'medium':
+                        return 'Média';
+                    case 'high':
+                        return 'Alta';
+                    default:
+                        return 'Indefinida';
+                }
+            }
+            
+            // Get initials from name
+            function getInitials(name) {
+                if (!name) return 'ME';
+                return name
+                    .split(' ')
+                    .map(word => word[0])
+                    .join('')
+                    .toUpperCase()
+                    .substring(0, 2);
+            }
+
+            // Render tasks in Kanban layout
+            function renderTasks() {
+                // Apply filters
+                const priorityFilter = filterPriority.value;
+                const statusFilter = filterStatus.value;
+                const clientFilter = filterClient.value;
+                
+                let filteredTasks = tasks;
+                
+                if (priorityFilter !== 'all') {
+                    filteredTasks = filteredTasks.filter(task => task.priority === priorityFilter);
+                }
+                
+                if (statusFilter !== 'all') {
+                    filteredTasks = filteredTasks.filter(task => {
+                        if (statusFilter === 'completed') return task.completed;
+                        if (statusFilter === 'progress') return !task.completed && task.status === 'progress';
+                        if (statusFilter === 'pending') return !task.completed && (!task.status || task.status === 'pending');
+                        return true;
+                    });
+                }
+                
+                if (clientFilter !== 'all') {
+                    filteredTasks = filteredTasks.filter(task => task.client && task.client.toLowerCase().replace(/\s+/g, '-') === clientFilter);
+                }
+
+                // Get containers for each column
+                const pendingContainer = document.getElementById('pending-tasks-container');
+                const progressContainer = document.getElementById('progress-tasks-container');
+                const completedContainer = document.getElementById('completed-tasks-container');
+                
+                // Clear containers
+                pendingContainer.innerHTML = '';
+                progressContainer.innerHTML = '';
+                completedContainer.innerHTML = '';
+                
+                // Show empty state if no tasks
+                if (filteredTasks.length === 0) {
+                    if (tasks.length === 0) {
+                        document.getElementById('empty-state').classList.remove('hidden');
+                        document.getElementById('empty-state').classList.add('flex');
+                    } else {
+                        const noResults = `
+                            <div class="flex flex-col items-center justify-center py-8 text-center text-gray-500">
+                                <i class="fas fa-filter text-5xl mb-4"></i>
+                                <p class="text-lg">Nenhuma tarefa encontrada com o filtro selecionado.</p>
+                                <p>Tente ajustar o filtro para ver mais tarefas.</p>
+                            </div>
+                        `;
+                        pendingContainer.innerHTML = noResults;
+                        progressContainer.innerHTML = noResults;
+                        completedContainer.innerHTML = noResults;
+                    }
+                    
+                    // Update counters
+                    document.getElementById('pending-count').textContent = '0';
+                    document.getElementById('progress-count').textContent = '0';
+                    document.getElementById('completed-count').textContent = '0';
+                    
+                    return;
+                }
+                
+                // Hide empty state
+                document.getElementById('empty-state').classList.add('hidden');
+                document.getElementById('empty-state').classList.remove('flex');
+                
+                // Separate tasks by status
+                const pendingTasks = filteredTasks.filter(task => !task.completed && (!task.status || task.status === 'pending'));
+                const progressTasks = filteredTasks.filter(task => !task.completed && task.status === 'progress');
+                const completedTasks = filteredTasks.filter(task => task.completed);
+                
+                // Update counters
+                document.getElementById('pending-count').textContent = pendingTasks.length;
+                document.getElementById('progress-count').textContent = progressTasks.length;
+                document.getElementById('completed-count').textContent = completedTasks.length;
+                
+                // Render each task group
+                renderTaskGroup(pendingTasks, pendingContainer, 'pending');
+                renderTaskGroup(progressTasks, progressContainer, 'progress');
+                renderTaskGroup(completedTasks, completedContainer, 'completed');
+                
+                // Add event listeners for drag and drop
+                setupDragAndDrop();
+            }
+            
+            // Render a group of tasks in a specific container
+            function renderTaskGroup(tasks, container, status) {
+                if (tasks.length === 0) {
+                    container.innerHTML = `
+                        <div class="flex flex-col items-center justify-center py-4 text-center text-gray-400">
+                            <p>Nenhuma tarefa nesta coluna</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                tasks.forEach(task => {
+                    const taskElement = document.createElement('div');
+                    taskElement.className = `card bg-base-100 shadow-sm border border-base-300 hover:shadow-md transition-all cursor-move ${task.completed ? 'opacity-70' : ''}`;
+                    taskElement.setAttribute('draggable', 'true');
+                    taskElement.setAttribute('data-id', task.id);
+                    taskElement.setAttribute('data-status', status);
+                    
+                    taskElement.innerHTML = `
+                        <div class="card-body p-4">
+                            <div class="flex justify-between items-start">
+                                <h3 class="font-medium text-base ${task.completed ? 'line-through' : ''}">${task.title}</h3>
+                                <div class="badge ${getPriorityBadge(task.priority)}">${getPriorityLabel(task.priority)}</div>
+                            </div>
+                            ${task.description ? `<p class="text-sm text-gray-600 mt-1 line-clamp-2 ${task.completed ? 'line-through' : ''}">${task.description}</p>` : ''}
+                            <div class="flex flex-wrap gap-2 mt-3">
+                                ${task.client ? `
+                                <span class="badge badge-outline badge-sm">
+                                    <i class="fas fa-building mr-1"></i> ${task.client}
+                                </span>` : ''}
+                                <span class="badge badge-outline badge-sm">
+                                    <i class="fas fa-calendar-alt mr-1"></i> ${formatDate(task.date)}
+                                </span>
+                            </div>
+                            <div class="card-actions justify-between items-center mt-3">
+                                <div class="avatar-group -space-x-2">
+                                    <div class="avatar avatar-xs">
+                                        <div class="w-6 h-6 rounded-full bg-${task.assignee === 'team' ? 'blue' : 'purple'}-200 flex items-center justify-center text-xs font-bold">
+                                            ${task.assignee === 'team' ? 'TM' : 'ME'}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex gap-1">
+                                    <button class="btn btn-ghost btn-xs edit-task" data-id="${task.id}">
+                                        <i class="fas fa-edit text-info"></i>
+                                    </button>
+                                    <button class="btn btn-ghost btn-xs delete-task" data-id="${task.id}">
+                                        <i class="fas fa-trash-alt text-error"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    container.appendChild(taskElement);
+                });
+                
+                // Add event listeners to task elements
+                container.querySelectorAll('.edit-task').forEach(button => {
+                    button.addEventListener('click', editTask);
+                });
+                
+                container.querySelectorAll('.delete-task').forEach(button => {
+                    button.addEventListener('click', deleteTask);
+                });
+            }
+            
+            // Setup drag and drop functionality
+            function setupDragAndDrop() {
+                const draggables = document.querySelectorAll('[draggable="true"]');
+                const containers = [
+                    document.getElementById('pending-tasks-container'),
+                    document.getElementById('progress-tasks-container'),
+                    document.getElementById('completed-tasks-container')
+                ];
+                
+                draggables.forEach(draggable => {
+                    draggable.addEventListener('dragstart', () => {
+                        draggable.classList.add('opacity-50');
+                    });
+                    
+                    draggable.addEventListener('dragend', () => {
+                        draggable.classList.remove('opacity-50');
+                    });
+                });
+                
+                containers.forEach(container => {
+                    container.addEventListener('dragover', e => {
+                        e.preventDefault();
+                        container.classList.add('bg-base-300');
+                    });
+                    
+                    container.addEventListener('dragleave', () => {
+                        container.classList.remove('bg-base-300');
+                    });
+                    
+                    container.addEventListener('drop', e => {
+                        e.preventDefault();
+                        container.classList.remove('bg-base-300');
+                        
+                        const draggedId = e.dataTransfer?.getData('text/plain') || 
+                                        document.querySelector('.opacity-50')?.dataset.id;
+                        
+                        if (!draggedId) return;
+                        
+                        const task = tasks.find(t => t.id === draggedId);
+                        if (!task) return;
+                        
+                        // Update task status based on container
+                        if (container.id === 'pending-tasks-container') {
+                            task.status = 'pending';
+                            task.completed = false;
+                        } else if (container.id === 'progress-tasks-container') {
+                            task.status = 'progress';
+                            task.completed = false;
+                        } else if (container.id === 'completed-tasks-container') {
+                            task.status = 'completed';
+                            task.completed = true;
+                        }
+                        
+                        saveTasks();
+                        renderTasks();
+                    });
+                });
+                
+                // Add ability to set data transfer
+                draggables.forEach(draggable => {
+                    draggable.addEventListener('dragstart', e => {
+                        e.dataTransfer.setData('text/plain', draggable.dataset.id);
+                    });
+                });
+            }
+
+            // Add new task (modified for Kanban)
+            function addTask(e) {
+                e.preventDefault();
+                
+                const titleInput = document.getElementById('task-title');
+                const descriptionInput = document.getElementById('task-description');
+                const priorityInput = document.getElementById('task-priority');
+                const dateInput = document.getElementById('task-date');
+                const clientInput = document.getElementById('task-client');
+                const assigneeInput = document.getElementById('task-assignee');
+                
+                const title = titleInput.value.trim();
+                const description = descriptionInput.value.trim();
+                const priority = priorityInput.value === 'Selecione' ? 'medium' : priorityInput.value;
+                const date = dateInput.value;
+                const client = clientInput.value.trim();
+                const assignee = assigneeInput.value === 'Selecione' ? 'me' : assigneeInput.value;
+                
+                if (!title) return;
+                
+                const newTask = {
+                    id: Date.now().toString(),
+                    title,
+                    description,
+                    priority,
+                    date,
+                    client,
+                    assignee,
+                    status: 'pending',
+                    completed: false,
+                    createdAt: new Date()
+                };
+                
+                tasks.unshift(newTask);
+                saveTasks();
+                renderTasks();
+                
+                // Reset form
+                taskForm.reset();
+                showToast('Tarefa adicionada com sucesso!');
+            }
+
+            // Toggle task status (modified for Kanban)
+            function toggleTaskStatus(taskId, completed) {
+                const task = tasks.find(t => t.id === taskId);
+                
+                if (task) {
+                    task.completed = completed;
+                    task.status = completed ? 'completed' : 'pending';
+                    saveTasks();
+                    renderTasks();
+                    
+                    if (completed) {
+                        showToast('Tarefa concluída!', 'success');
+                    }
+                }
+            }
+
+            // Edit task
+            function editTask(e) {
+                const taskId = e.currentTarget.dataset.id;
+                const task = tasks.find(t => t.id === taskId);
+                
+                if (task) {
+                    // Fill edit form
+                    document.getElementById('edit-id').value = task.id;
+                    document.getElementById('edit-title').value = task.title;
+                    document.getElementById('edit-description').value = task.description || '';
+                    document.getElementById('edit-priority').value = task.priority;
+                    document.getElementById('edit-date').value = task.date || '';
+                    document.getElementById('edit-client').value = task.client || '';
+                    document.getElementById('edit-assignee').value = task.assignee || 'me';
+                    document.getElementById('edit-status').value = task.completed ? 'completed' : (task.status || 'pending');
+                    
+                    // Open modal
+                    editModal.showModal();
+                }
+            }
+
+            // Save edited task
+            function saveEditedTask(e) {
+                e.preventDefault();
+                
+                const taskId = document.getElementById('edit-id').value;
+                const task = tasks.find(t => t.id === taskId);
+                
+                if (task) {
+                    task.title = document.getElementById('edit-title').value.trim();
+                    task.description = document.getElementById('edit-description').value.trim();
+                    task.priority = document.getElementById('edit-priority').value;
+                    task.date = document.getElementById('edit-date').value;
+                    task.client = document.getElementById('edit-client').value.trim();
+                    task.assignee = document.getElementById('edit-assignee').value;
+                    
+                    const status = document.getElementById('edit-status').value;
+                    task.status = status;
+                    task.completed = status === 'completed';
+                    
+                    saveTasks();
+                    renderTasks();
+                    editModal.close();
+                    showToast('Tarefa atualizada com sucesso!');
+                }
+            }
+
+            // Delete task
+            function deleteTask(e) {
+                const taskId = e.currentTarget.dataset.id;
+                
+                if (confirm('Tem certeza que deseja excluir esta tarefa?')) {
+                    tasks = tasks.filter(task => task.id !== taskId);
+                    saveTasks();
+                    renderTasks();
+                    showToast('Tarefa excluída com sucesso!', 'error');
+                }
+            }
+
+            // Clear all tasks
+            function clearAllTasks() {
+                if (tasks.length === 0) {
+                    showToast('Não há tarefas para excluir!', 'warning');
+                    return;
+                }
+                
+                if (confirm('Tem certeza que deseja excluir TODAS as tarefas?')) {
+                    tasks = [];
+                    saveTasks();
+                    renderTasks();
+                    showToast('Todas as tarefas foram excluídas!', 'error');
+                }
+            }
+
+            // Event Listeners
+            taskForm.addEventListener('submit', addTask);
+            editForm.addEventListener('submit', saveEditedTask);
+            clearAllBtn.addEventListener('click', clearAllTasks);
+            filterStatus.addEventListener('change', renderTasks);
+            filterPriority.addEventListener('change', renderTasks);
+            filterClient.addEventListener('change', renderTasks);
+
+            // Initial render
+            updateStats();
+            renderTasks();
+        });
+    </script>
+</body>
+</html>
